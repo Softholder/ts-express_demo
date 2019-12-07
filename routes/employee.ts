@@ -71,19 +71,23 @@ let conf: excelExport.Config = {
 
 router.get('/downloadEmployee', async (req, res) => {
     try {
-        // 查询数据
-        let result = await query(queryAllSQL);
-        // 将数据映射为需要导出的格式
-        conf.rows = result.map((i: any) => {
+          // 查询数据
+          let result = await query(queryAllSQL);
+          // 将数据映射为需要导出的格式
+          conf.rows = result.map((i: any) => {
             return [i.id, i.name, i.department, i.hiredate, i.level];
-        });
-        // 生成excel
-        let excel = excelExport.execute(conf);
-        // 设置响应报文头
-        res.setHeader('Content-Type', 'application/vnd.openxmlformats');
-        res.setHeader('Content-Disposition', 'attachment; filename=EmployeeIndex.xlsx');
-        res.end(excel, 'binary');
-    } catch (e) {
+          });
+          // 生成excel
+          let excel = excelExport.execute(conf);
+          // 设置响应报文头
+          res.setHeader('Content-Type', 'application/vnd.openxmlformats');
+          res.setHeader(
+            'Content-Disposition',
+            'attachment; filename=EmployeeIndex.xlsx',
+          );
+          // 返回二进制文件
+          res.end(excel, 'binary');
+        } catch (e) {
         // 不是返回json格式，直接返回错误信息
         res.send(e.toString())
     }
