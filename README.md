@@ -5,12 +5,12 @@
   npm install
   ```
 
-- 启动应用
-  ```
-  npn run watch
-  ```
-
 - 编译
   ```
   npn run build
+  ```
+
+- 启动应用
+  ```
+  npn run watch
   ```
