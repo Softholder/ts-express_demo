@@ -91,6 +91,70 @@ router.get('/downloadEmployee', async (req, res) => {
         // 不是返回json格式，直接返回错误信息
         res.send(e.toString())
     }
+});
+
+router.post('/deleteEmployee', async (req, res) => {
+    let { id } = req.body;
+    let sql = `DELETE FROM employee WHERE id=${id}`;
+    try {
+        let result = await query(sql);
+        // 删除成功更新页面数据
+        if(result.affectedRows === 1){
+            let querySql = `${queryAllSQL} ORDER BY employee.id DESC`;
+            try {
+              let result = await query(querySql);
+              result.forEach((i: any) => {
+                i.key = i.id;
+              });
+              res.json({
+                flag: 0,
+                data: result,
+              });
+            } catch (e) {
+              res.json({
+                flag: 1,
+                msg: e.toString(),
+              });
+            }
+        }
+    } catch (e) {
+        res.json({
+          flag: 1,
+          msg: e.toString(),
+        });
+    }
+});
+
+router.post('/updateEmployee', async (req, res) => {
+    let { id, name, departmentId, hiredate, levelId } = req.body;
+    let updateSql = `UPDATE employee SET name='${name}', departmentId='${departmentId}',
+        hiredate='${hiredate}', levelId='${levelId}' WHERE id=${id}`;
+    try {
+        let updateResult = await query(updateSql);
+        if(updateResult.affectedRows === 1){
+            let querySql = `${queryAllSQL} ORDER BY employee.id DESC`;
+            try {
+              let result = await query(querySql);
+              result.forEach((i: any) => {
+                i.key = i.id;
+              });
+              res.json({
+                flag: 0,
+                data: result,
+              });
+            } catch (e) {
+              res.json({
+                flag: 1,
+                msg: e.toString(),
+              });
+            }
+        }
+    } catch (e) {
+        res.json({
+          flag: 1,
+          msg: e.toString(),
+        });
+    }
 })
 
 export default router;
